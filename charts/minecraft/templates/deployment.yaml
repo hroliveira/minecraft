@@ -40,10 +40,10 @@ spec:
             memory: "2Gi"
             cpu: "1000m"  # 1 CPU
         volumeMounts:
-        - name: minecraft-data
+        - name: minecraft-v2-data
           mountPath: /data
       volumes:
-      - name: minecraft-datav2
+      - name: minecraft-v2-data
         persistentVolumeClaim:
           claimName: minecraft-v2-pvc
       - name: minecraft-v2-config
