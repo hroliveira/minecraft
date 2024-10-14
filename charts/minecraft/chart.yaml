@@ -1,0 +1,5 @@
+apiVersion: v2
+name: minecraft-v2
+description: A Minecraft server deployed on Kubernetes
+version: 1.0.0
+appVersion: "1.17"

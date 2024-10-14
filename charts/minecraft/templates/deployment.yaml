@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: minecraft-v2
+  labels:
+    app: minecraft-v2
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: minecraft-v2
+  template:
+    metadata:
+      labels:
+        app: minecraft-v2
+    spec:
+      containers:
+      - name: minecraft-v2
+        image: itzg/minecraft-server:latest
+        ports:
+        - containerPort: 25565
+        env:
+        - name: EULA
+          value: "TRUE" # Aceitar EULA
+        - name: ONLINE_MODE
+          value: "FALSE"
+        - name: ENABLE_CHEATS
+          value: "TRUE" # Habilitar cheats
+        - name: MODE
+          value: "survival" # Modo criativo
+        - name: DIFFICULTY
+          value: "easy" # Nível de dificuldade
+        - name: MEMORY
+          value: "2G" # Memória RAM alocada
+        resources:
+          limits:
+            memory: "4Gi"
+            cpu: "2000m"  # 2 CPUs
+          requests:
+            memory: "2Gi"
+            cpu: "1000m"  # 1 CPU
+        volumeMounts:
+        - name: minecraft-data
+          mountPath: /data
+      volumes:
+      - name: minecraft-datav2
+        persistentVolumeClaim:
+          claimName: minecraft-v2-pvc
+      - name: minecraft-v2-config
+        configMap:
+          name: minecraft-v2-config

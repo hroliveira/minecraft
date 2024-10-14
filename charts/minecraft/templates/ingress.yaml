@@ -1,0 +1,19 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: minecraft-v2-ingress
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  rules:
+    - host: minecraft-v2.hro.dev.br   # Substitua pelo seu domínio
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: minecraft-v2-service
+                port:
+                  number: 80    # A porta HTTP associada à interface web do Minecraft (substitua se for diferente)
+  ingressClassName: nginx
