@@ -8,9 +8,7 @@ spec:
     spec:
       template:
         spec:
-
           restartPolicy: OnFailure  # Reiniciar apenas se falhar
-
           containers:
           - name: backup
             image: ubuntu:latest
@@ -21,7 +19,7 @@ spec:
                 tar -czf /backups/minecraft-backup-$(date +\%F).tar.gz /data && \
                 echo "Backup completed."
             volumeMounts:
-
+            - name: minecraft-v2-data  # Nome do volume correto
               mountPath: /data  # Diretório de dados do Minecraft
             - name: backup-storage
               mountPath: /backups  # Diretório onde o backup será armazenado
@@ -32,4 +30,3 @@ spec:
           - name: backup-storage
             persistentVolumeClaim:
               claimName: backup-pvc  # PVC para armazenar os backups
-
