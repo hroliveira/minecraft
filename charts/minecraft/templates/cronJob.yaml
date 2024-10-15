@@ -8,9 +8,7 @@ spec:
     spec:
       template:
         spec:
-
           restartPolicy: OnFailure  # Reiniciar apenas se falhar
-
           containers:
           - name: backup
             image: ubuntu:latest
@@ -32,4 +30,3 @@ spec:
           - name: backup-storage
             persistentVolumeClaim:
               claimName: backup-pvc  # PVC para armazenar os backups
-
