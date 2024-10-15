@@ -1,0 +1,31 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: minecraft-backup
+spec:
+  schedule: "0 2 * * *"  # Executar todos os dias às 2h
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: backup
+            image: ubuntu:latest  # Usando uma imagem base do Ubuntu
+            command: ["/bin/sh", "-c"]
+            args:
+              - |
+                mkdir -p /backups && \
+                tar -czf /backups/minecraft-backup-$(date +\%F).tar.gz /data && \
+                echo "Backup completed."
+            volumeMounts:
+            - name: minecraft-v2-data
+              mountPath: /data  # Diretório de dados do Minecraft
+            - name: backup-storage
+              mountPath: /backups  # Diretório onde o backup será armazenado
+          volumes:
+          - name: minecraft-data
+            persistentVolumeClaim:
+              claimName: minecraft-v2-pvc  # PVC do servidor Minecraft
+          - name: backup-storage
+            persistentVolumeClaim:
+              claimName: backup-pvc  # PVC onde o backup será armazenado
