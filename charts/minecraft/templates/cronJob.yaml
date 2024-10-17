@@ -8,6 +8,7 @@ spec:
     spec:
       template:
         spec:
+          activeDeadlineSeconds: 600
           restartPolicy: OnFailure  # Reiniciar apenas se falhar
           containers:
           - name: backup
