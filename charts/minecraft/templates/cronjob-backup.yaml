@@ -14,9 +14,22 @@ spec:
             command: ["/bin/sh", "-c"]
             args:
             - |
-              # Executar o backup
-              echo "Executando backup..."
-              tar czf /backups/minecraft-backup-$(date +\%Y\%m\%d\%H\%M\%S).tar.gz /data
+              LOG_FILE="/backups/minecraft-backup-$(date +\%Y\%m\%d\%H\%M\%S).log"
+              BACKUP_FILE="/backups/minecraft-backup-$(date +\%Y\%m\%d\%H\%M\%S).tar.gz"
+
+              # Iniciar log
+              echo "Iniciando processo de backup em $(date)" | tee -a $LOG_FILE
+
+              # Executar o backup e registrar no log
+              echo "Executando backup do diretório /data para $BACKUP_FILE" | tee -a $LOG_FILE
+              tar czf $BACKUP_FILE /data 2>> $LOG_FILE
+
+              if [ $? -eq 0 ]; then
+                echo "Backup concluído com sucesso em $(date)" | tee -a $LOG_FILE
+              else
+                echo "Erro ao executar o backup em $(date)" | tee -a $LOG_FILE
+              fi
+           
             volumeMounts:
             - name: minecraft-v2-data
               mountPath: /data
@@ -26,7 +39,7 @@ spec:
           volumes:
           - name: minecraft-v2-data
             persistentVolumeClaim:
-              claimName: minecraft-v2-pvc
+              claimName: minecraft-v2.1-pvc
           - name: smb-backup-storage
             persistentVolumeClaim:
               claimName: smb-backup-pvc
