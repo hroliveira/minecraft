@@ -10,11 +10,24 @@ spec:
         spec:
           containers:
           - name: backup
-            image: ubuntu:latest
+            image: itzg/minecraft-server:latest  # Use a imagem que contém os scripts
             command: ["/bin/sh", "-c"]
             args:
             - |
+              # Desligar o servidor Minecraft
+              echo "Desligando o servidor Minecraft..."
+              /usr/local/bin/mc-stop.sh
+
+              # Aguardar alguns segundos para garantir que o servidor desligou
+              sleep 10
+
+              # Executar o backup
+              echo "Executando backup..."
               tar czf /backups/minecraft-backup-$(date +\%Y\%m\%d\%H\%M\%S).tar.gz /data
+
+              # Reiniciar o servidor Minecraft
+              echo "Reiniciando o servidor Minecraft..."
+              /usr/local/bin/mc-start.sh
             volumeMounts:
             - name: minecraft-v2-data
               mountPath: /data
