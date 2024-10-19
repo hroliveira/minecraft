@@ -4,7 +4,7 @@ metadata:
   name: backup-pvc
 spec:
   accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
   resources:
     requests:
       storage: 6Gi  # Ajuste o tamanho conforme necessário
