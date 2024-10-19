@@ -14,23 +14,9 @@ spec:
             command: ["/bin/sh", "-c"]
             args:
             - |
-              # Desligar o servidor Minecraft
-              echo "Desligando o servidor Minecraft..."
-              /usr/local/bin/mc-stop.sh
-
-              # Aguardar até que o servidor esteja realmente desligado
-              while screen -list | grep -q minecraft; do
-                echo "Aguardando o servidor Minecraft desligar..."
-                sleep 5
-              done
-
               # Executar o backup
               echo "Executando backup..."
               tar czf /backups/minecraft-backup-$(date +\%Y\%m\%d\%H\%M\%S).tar.gz /data
-
-              # Reiniciar o servidor Minecraft
-              echo "Reiniciando o servidor Minecraft..."
-              /usr/local/bin/mc-start.sh
             volumeMounts:
             - name: minecraft-v2-data
               mountPath: /data
