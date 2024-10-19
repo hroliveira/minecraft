@@ -2,13 +2,14 @@ apiVersion: batch/v1
 kind: CronJob
 metadata:
   name: minecraft-backup
+  labels:
+    app: minecraft-backup
 spec:
   schedule: "0 2 * * *"  # Executar todos os dias às 2h
   jobTemplate:
     spec:
       template:
         spec:
-          activeDeadlineSeconds: 600
           restartPolicy: OnFailure  # Reiniciar apenas se falhar
           containers:
           - name: backup
@@ -16,18 +17,17 @@ spec:
             command: ["/bin/sh", "-c"]
             args:
               - |
-                mkdir -p /backups && \
                 tar -czf /backups/minecraft-backup-$(date +\%F).tar.gz /data && \
                 echo "Backup completed."
             volumeMounts:
-            - name: minecraft-v2-data  # Nome do volume correto
-              mountPath: /data  # Diretório de dados do Minecraft
+            - name: minecraft-v2-data  # Volume de dados do Minecraft
+              mountPath: /data  # Caminho onde os dados do Minecraft estão
             - name: backup-storage
-              mountPath: /backups  # Diretório onde o backup será armazenado
+              mountPath: /backups  # Caminho onde o backup será armazenado
           volumes:
           - name: minecraft-v2-data
             persistentVolumeClaim:
-              claimName: minecraft-v2-pvc  # PVC correto para os dados do Minecraft
+              claimName: minecraft-v2-pvc  # PVC para os dados do Minecraft
           - name: backup-storage
             persistentVolumeClaim:
-              claimName: backup-pvc  # PVC para armazenar os backups
+              claimName: backup-pvc  # PVC onde o backup será armazenado
