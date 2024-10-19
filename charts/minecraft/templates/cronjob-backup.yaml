@@ -3,7 +3,7 @@ kind: CronJob
 metadata:
   name: minecraft-backup
 spec:
-  schedule: "0 2 * * *" # Backup diário às 2:00
+  schedule: "0 2 * * *"  # Backup diário às 2:00
   jobTemplate:
     spec:
       template:
@@ -18,13 +18,13 @@ spec:
             volumeMounts:
             - name: minecraft-v2-data
               mountPath: /data
-            - name: backup-storage
+            - name: smb-backup-storage
               mountPath: /backups
           restartPolicy: OnFailure
           volumes:
           - name: minecraft-v2-data
             persistentVolumeClaim:
               claimName: minecraft-v2-pvc
-          - name: backup-storage
+          - name: smb-backup-storage
             persistentVolumeClaim:
-              claimName: backup-pvc
+              claimName: smb-backup-pvc

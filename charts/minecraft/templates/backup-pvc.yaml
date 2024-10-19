@@ -1,10 +1,10 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: backup-pvc
+  name: smb-backup-pvc
 spec:
   accessModes:
     - ReadWriteMany
   resources:
     requests:
-      storage: 6Gi  # Ajuste o tamanho conforme necessário
+      storage: 10Gi
