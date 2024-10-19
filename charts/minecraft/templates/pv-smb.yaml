@@ -15,4 +15,4 @@ spec:
       source: "//192.168.100.204/minecraft-backups"
     nodeStageSecretRef:
       name: smb-credentials
-      namespace: default
+      namespace: minecraft-server-v2
