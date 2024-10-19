@@ -42,22 +42,12 @@ spec:
         volumeMounts:
         - name: minecraft-v2-data
           mountPath: /data
-      - name: backup-container
-        image: ubuntu:latest
-        command: ["/bin/sh", "-c"]
-        args: ["while true; do sleep 3600; done"]  # Manter o contêiner ativo
-        volumeMounts:
-        - name: minecraft-v2-data
-          mountPath: /data  # Mesma pasta de dados do Minecraft
-        - name: backup-storage
-          mountPath: /backups  # Pasta onde os backups serão salvos
+        - name: minecraft-v2-config
+          mountPath: /config  # Montar o configMap no pod para acessar as configs do Minecraft
       volumes:
       - name: minecraft-v2-data
         persistentVolumeClaim:
           claimName: minecraft-v2-pvc
-      - name: backup-storage
-        persistentVolumeClaim:
-          claimName: backup-pvc
       - name: minecraft-v2-config
         configMap:
           name: minecraft-v2-config
