@@ -27,25 +27,37 @@ spec:
         - name: ENABLE_CHEATS
           value: "TRUE" # Habilitar cheats
         - name: MODE
-          value: "survival" # Modo criativo
+          value: "survival"
         - name: DIFFICULTY
-          value: "easy" # Nível de dificuldade
+          value: "easy"
         - name: MEMORY
           value: "2G" # Memória RAM alocada
         resources:
           limits:
             memory: "4Gi"
-            cpu: "2000m"  # 2 CPUs
+            cpu: "2000m"
           requests:
             memory: "2Gi"
-            cpu: "1000m"  # 1 CPU
+            cpu: "1000m"
         volumeMounts:
         - name: minecraft-v2-data
           mountPath: /data
+      - name: backup-container
+        image: ubuntu:latest
+        command: ["/bin/sh", "-c"]
+        args: ["while true; do sleep 3600; done"]  # Manter o contêiner ativo
+        volumeMounts:
+        - name: minecraft-v2-data
+          mountPath: /data  # Mesma pasta de dados do Minecraft
+        - name: backup-storage
+          mountPath: /backups  # Pasta onde os backups serão salvos
       volumes:
       - name: minecraft-v2-data
         persistentVolumeClaim:
           claimName: minecraft-v2-pvc
+      - name: backup-storage
+        persistentVolumeClaim:
+          claimName: backup-pvc
       - name: minecraft-v2-config
         configMap:
           name: minecraft-v2-config
