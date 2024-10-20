@@ -16,6 +16,7 @@ spec:
             - |
               LOG_FILE="/backups/minecraft-backup-$(date +\%Y\%m\%d\%H\%M\%S).log"
               BACKUP_FILE="/backups/minecraft-backup-$(date +\%Y\%m\%d\%H\%M\%S).tar.gz"
+              MOUNT_POINT="/mnt/backup"
 
               # Iniciar log
               echo "Iniciando processo de backup em $(date)" | tee -a $LOG_FILE
