@@ -47,7 +47,7 @@ spec:
       volumes:
       - name: minecraft-v2-data
         persistentVolumeClaim:
-          claimName: minecraft-v2-pvc
+          claimName: minecraft-v2.1-pvc
       - name: minecraft-v2-config
         configMap:
           name: minecraft-v2-config
