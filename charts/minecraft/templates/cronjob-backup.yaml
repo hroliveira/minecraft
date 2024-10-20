@@ -20,16 +20,36 @@ spec:
               # Iniciar log
               echo "Iniciando processo de backup em $(date)" | tee -a $LOG_FILE
 
-              # Executar o backup e registrar no log
-              echo "Executando backup do diretório /data para $BACKUP_FILE" | tee -a $LOG_FILE
-              tar czf $BACKUP_FILE /data 2>> $LOG_FILE
+              # Montar o compartilhamento SMB
+              echo "Montando o compartilhamento SMB..." | tee -a $LOG_FILE
+              mount -t cifs //192.168.100.204/minecraft-backups /mnt/backup -o username=helinton,password=0l1v31r@,file_mode=0777,dir_mode=0777
+
+              # Verificar se a montagem foi bem-sucedida
+              if [ $? -eq 0 ]; then
+                echo "Montagem do compartilhamento SMB bem-sucedida em $(date)" | tee -a $LOG_FILE
+
+                # Executar o backup e registrar no log
+                echo "Executando backup do diretório /data para $BACKUP_FILE" | tee -a $LOG_FILE
+                tar czf $BACKUP_FILE /data 2>> $LOG_FILE
+
+                if [ $? -eq 0 ]; then
+                  echo "Backup concluído com sucesso em $(date)" | tee -a $LOG_FILE
+                else
+                  echo "Erro ao executar o backup em $(date)" | tee -a $LOG_FILE
+                fi
+              else
+                echo "Falha ao montar o compartilhamento SMB em $(date)" | tee -a $LOG_FILE
+              fi
+
+              # Desmontar o compartilhamento SMB após o backup
+              echo "Desmontando o compartilhamento SMB..." | tee -a $LOG_FILE
+              umount /mnt/backup
 
               if [ $? -eq 0 ]; then
-                echo "Backup concluído com sucesso em $(date)" | tee -a $LOG_FILE
+                echo "Desmontagem do SMB concluída com sucesso em $(date)" | tee -a $LOG_FILE
               else
-                echo "Erro ao executar o backup em $(date)" | tee -a $LOG_FILE
+                echo "Erro ao desmontar o SMB em $(date)" | tee -a $LOG_FILE
               fi
-           
             volumeMounts:
             - name: minecraft-v2-data
               mountPath: /data
