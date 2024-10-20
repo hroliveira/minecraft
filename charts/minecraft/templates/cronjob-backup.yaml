@@ -27,9 +27,9 @@ spec:
                 mkdir -p $MOUNT_POINT
               fi
 
-              # Montar o compartilhamento SMB
+              # Montar o compartilhamento SMB com permissões de superusuário
               echo "Montando o compartilhamento SMB..." | tee -a $LOG_FILE
-              mount -t cifs //192.168.100.204/minecraft-backups $MOUNT_POINT -o username=helinton,password=0l1v31r@,file_mode=0777,dir_mode=0777
+              sudo mount -t cifs //192.168.100.204/minecraft-backups $MOUNT_POINT -o username=helinton,password=0l1v31r@,file_mode=0777,dir_mode=0777
 
               # Verificar se a montagem foi bem-sucedida
               if [ $? -eq 0 ]; then
@@ -48,9 +48,9 @@ spec:
                 echo "Falha ao montar o compartilhamento SMB em $(date)" | tee -a $LOG_FILE
               fi
 
-              # Desmontar o compartilhamento SMB após o backup
+              # Desmontar o compartilhamento SMB após o backup com permissões de superusuário
               echo "Desmontando o compartilhamento SMB..." | tee -a $LOG_FILE
-              umount $MOUNT_POINT
+              sudo umount $MOUNT_POINT
 
               if [ $? -eq 0 ]; then
                 echo "Desmontagem do SMB concluída com sucesso em $(date)" | tee -a $LOG_FILE
@@ -70,3 +70,9 @@ spec:
           - name: smb-backup-storage
             persistentVolumeClaim:
               claimName: smb-backup-pvc
+
+          # Adicione a seção securityContext aqui
+          securityContext:
+            runAsUser: 0  # Executar como root
+            capabilities:
+              add: ["SYS_ADMIN"]  # Permissão necessária para montagem/desmontagem
