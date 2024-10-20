@@ -21,9 +21,15 @@ spec:
               # Iniciar log
               echo "Iniciando processo de backup em $(date)" | tee -a $LOG_FILE
 
+              # Criar o diretório de montagem se não existir
+              if [ ! -d $MOUNT_POINT ]; then
+                echo "Criando o diretório de montagem $MOUNT_POINT..." | tee -a $LOG_FILE
+                mkdir -p $MOUNT_POINT
+              fi
+
               # Montar o compartilhamento SMB
               echo "Montando o compartilhamento SMB..." | tee -a $LOG_FILE
-              mount -t cifs //192.168.100.204/minecraft-backups /mnt/backup -o username=helinton,password=0l1v31r@,file_mode=0777,dir_mode=0777
+              mount -t cifs //192.168.100.204/minecraft-backups $MOUNT_POINT -o username=helinton,password=0l1v31r@,file_mode=0777,dir_mode=0777
 
               # Verificar se a montagem foi bem-sucedida
               if [ $? -eq 0 ]; then
@@ -44,7 +50,7 @@ spec:
 
               # Desmontar o compartilhamento SMB após o backup
               echo "Desmontando o compartilhamento SMB..." | tee -a $LOG_FILE
-              umount /mnt/backup
+              umount $MOUNT_POINT
 
               if [ $? -eq 0 ]; then
                 echo "Desmontagem do SMB concluída com sucesso em $(date)" | tee -a $LOG_FILE
